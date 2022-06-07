@@ -19,9 +19,13 @@ func main() {
 
 	// board := boardFromString("007000100103905700698210530030600020500070001070001040012094678004106209005000400") // Beginner
 	// board := boardFromString("100500700000740000090002010003050480900000005085090600060200030000063000004005002") // Easy Single Position, Single Candidate
-	board := boardFromString("906008070500030000704950002491000508000000000603000724100089203000040007060500109") // Medium  Single Position, Single Candidate, Candidate Lines
+	// board := boardFromString("906008070500030000704950002491000508000000000603000724100089203000040007060500109") // Medium  Single Position, Single Candidate, Candidate Lines
+	// board := boardFromString("800204600007000001000050830900500000148060275000001009082070000700000500003809006") // Tricky Single Position, Single Candidate, Candidate Lines, Multiple Lines
+	// board := boardFromString("000780420020095008007000000000360005102908307300071000000000600200630070078019000") // Tricky Single Position, Single Candidate, Candidate Lines, Double Pairs, Naked Pairs, Hidden Pairs
+	board := boardFromString("060500000100004609700010800040000200000842000009000010005080007902600005000005080") // Fiendish Single Position, Single Candidate, Candidate Lines, Multiple Lines, Naked Pairs, Naked Triples, Hidden Pairs
 
 	board.printBoard()
+
 	solver := &Solver{
 		board: board,
 	}
