@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strconv"
@@ -13,6 +14,7 @@ type Solver struct {
 	cltUsed    bool
 	dpmlUsed   bool
 	npUsed     bool
+	silent     bool
 }
 
 func (s *Solver) Solve() {
@@ -20,9 +22,9 @@ func (s *Solver) Solve() {
 	s.cltUsed = false
 
 	s.board.GenerateOptions()
-	fmt.Println(s.board.options)
 
 	for !s.board.IsSolved() {
+		// fmt.Println(s.board.options)
 		if s.noOptions() {
 			fmt.Println("No Options!")
 			s.difficulty = -1
@@ -98,6 +100,10 @@ func (s *Solver) Solve() {
 	}
 }
 
+func (s *Solver) Silent() {
+	s.silent = true
+}
+
 func (s *Solver) noOptions() bool {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
@@ -116,7 +122,7 @@ func (s *Solver) singleCandidate() bool {
 				continue
 			}
 			if len(s.board.options[r][c]) == 1 {
-				logMove("Single Candidate", strconv.Itoa(s.board.options[r][c][0]), r, c)
+				s.logMove("Single Candidate", strconv.Itoa(s.board.options[r][c][0]), r, c)
 				s.board.PlaceNumber(r, c, s.board.options[r][c][0])
 				return true
 			}
@@ -161,17 +167,17 @@ func (s *Solver) singlePosition() bool {
 			}
 
 			if len(optsRowCpy) == 1 {
-				logMove("Single Position Row", strconv.Itoa(optsRowCpy[0]), r, c)
+				s.logMove("Single Position Row", strconv.Itoa(optsRowCpy[0]), r, c)
 				s.board.PlaceNumber(r, c, optsRowCpy[0])
 				return true
 			}
 			if len(optsColCpy) == 1 {
-				logMove("Single Position Col", strconv.Itoa(optsColCpy[0]), r, c)
+				s.logMove("Single Position Col", strconv.Itoa(optsColCpy[0]), r, c)
 				s.board.PlaceNumber(r, c, optsColCpy[0])
 				return true
 			}
 			if len(optsBoxCpy) == 1 {
-				logMove("Single Position Box", strconv.Itoa(optsBoxCpy[0]), r, c)
+				s.logMove("Single Position Box", strconv.Itoa(optsBoxCpy[0]), r, c)
 				s.board.PlaceNumber(r, c, optsBoxCpy[0])
 				return true
 			}
@@ -222,7 +228,7 @@ func (s *Solver) candidateLines() bool {
 
 						// If we have removed an option, log it and return true
 						if removed {
-							logMove("Candidate Lines Row", strconv.Itoa(opts[i]), (r*3)+sr, c)
+							s.logMove("Candidate Lines Row", strconv.Itoa(opts[i]), (r*3)+sr, c)
 							return true
 						}
 					}
@@ -267,7 +273,7 @@ func (s *Solver) candidateLines() bool {
 
 						// If we have removed an option, log it and return true
 						if removed {
-							logMove("Candidate Lines Col", strconv.Itoa(opts[i]), r, (c*3)+sc)
+							s.logMove("Candidate Lines Col", strconv.Itoa(opts[i]), r, (c*3)+sc)
 							return true
 						}
 					}
@@ -293,7 +299,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 				// Remove all values in the rest of the row from the options as they can't be candidates
 				for i := 0; i < 9; i++ {
 					// Ignore the columns in the box we are currently in
-					if i%3 == c {
+					if i/3 == c {
 						continue
 					}
 					opts = RemoveValues(opts, s.board.options[(r*3)+sr][i]...)
@@ -310,17 +316,17 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 								continue
 							}
 
-							indx := FindValueIndex(s.board.options[(r*3)+(i/3)][(c*3)+(i%3)], opts[i])
+							indx := FindValueIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], opts[i])
 							// If this cell contains the candidate, remove it and mark that we have removed an option
 							if indx != -1 {
-								s.board.options[(r*3)+(i/3)][(c*3)+(i%3)] = RemoveIndex(s.board.options[(r*3)+(i/3)][(c*3)+(i%3)], indx)
+								s.board.options[(r*3)+(j/3)][(c*3)+(j%3)] = RemoveIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], indx)
 								removed = true
 							}
 						}
 
 						// If we have removed an option, log it and return true
 						if removed {
-							logMove("Double Pair Or Multiple Lines Row", strconv.Itoa(opts[i]), (r*3)+sr, c)
+							s.logMove("Double Pair Or Multiple Lines Row", strconv.Itoa(opts[i]), (r*3)+sr, c)
 							return true
 						}
 					}
@@ -365,7 +371,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 
 						// If we have removed an option, log it and return true
 						if removed {
-							logMove("Double Pair Or Multiple Lines Col", strconv.Itoa(opts[i]), r, (c*3)+sc)
+							s.logMove("Double Pair Or Multiple Lines Col", strconv.Itoa(opts[i]), r, (c*3)+sc)
 							return true
 						}
 					}
@@ -393,26 +399,25 @@ func (s *Solver) nakedCandidates(length int) bool {
 }
 
 func (s *Solver) checkNakedCandidateCells(length int, cells []*Cell, dir string) bool {
-	occur := make(map[string]int)
+	occur := make(map[string][]*Cell)
 	for i := range cells {
 		cell := cells[i]
 		if s.board.board[cell.row][cell.col] != 0 {
 			continue
 		}
-		// Convert options list ex: [1,2,3,4] to a string ex:"1234" for use as a key
-		otps := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s.board.options[cell.row][cell.col])), ","), "[]")
-		// Increment the count of this key. Set to 1 if key doesn't exist
-		if _, found := occur[otps]; found {
-			occur[otps]++
-		} else {
-			occur[otps] = 1
-		}
+		// Convert options list ex: [1,2,3,4] to a string ex:"1,2,3,4" for use as a key
+
+		s, _ := json.Marshal(s.board.options[cell.row][cell.col])
+		opts := strings.ReplaceAll(strings.Trim(string(s), "[]"), ",", "")
+		// Increment the count of this key
+		occur[opts] = append(occur[opts], &Cell{row: cell.row, col: cell.col})
 	}
 
 	// Loop over all option occurences and check that a) are the length we are looking for, and b) occur the same amount of times as the length
 	for k, v := range occur {
-		if len(k) == length && v == length {
+		if len(k) == length && len(v) == length {
 			removed := false
+			candidates := strings.Split(k, "")
 			for i := range cells {
 				cell := cells[i]
 				if s.board.board[cell.row][cell.col] != 0 {
@@ -422,7 +427,7 @@ func (s *Solver) checkNakedCandidateCells(length int, cells []*Cell, dir string)
 				if strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s.board.options[cell.row][cell.col])), ""), "[]") == k {
 					continue
 				}
-				candidates := strings.Split(k, "")
+
 				// Attempt to remove each of the candidates from the rest of the cells in the row or column
 				for j := range candidates {
 					indx := FindValueIndex(s.board.options[cell.row][cell.col], int(candidates[j][0]-'0'))
@@ -436,7 +441,7 @@ func (s *Solver) checkNakedCandidateCells(length int, cells []*Cell, dir string)
 
 			// If a candidate has been removed yay! log and return true
 			if removed {
-				logMove("Naked Candidates "+dir+" len:"+strconv.Itoa(length), k, cells[0].row, cells[0].col)
+				s.logMove("Naked Candidates "+dir+" len:"+strconv.Itoa(length), k, cells[0].row, cells[0].col)
 				return true
 			}
 		}
@@ -457,6 +462,12 @@ func (s *Solver) hiddenCandidates(length int) bool {
 		}
 	}
 
+	for b := 0; b < 9; b++ {
+		if s.checkHiddenCandidatesCells(length, CellsForBox(b/3, b%3), "Box") {
+			return true
+		}
+	}
+
 	return false
 }
 
@@ -467,11 +478,7 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 
 		for j := range s.board.options[cell.row][cell.col] {
 			val := strconv.Itoa(s.board.options[cell.row][cell.col][j])
-			if _, found := occur[val]; found {
-				occur[val]++
-			} else {
-				occur[val] = 1
-			}
+			occur[val] += 1
 		}
 	}
 
@@ -532,7 +539,7 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 
 		// If a candidate has been removed yay! log and return true
 		if removed {
-			logMove("Hidden Candidates "+dir+" len:"+strconv.Itoa(length), "("+strconv.Itoa(combos[c][0])+", "+strconv.Itoa(combos[c][1])+")", cells[0].row, cells[0].col)
+			s.logMove("Hidden Candidates "+dir+" len:"+strconv.Itoa(length), "("+strconv.Itoa(combos[c][0])+", "+strconv.Itoa(combos[c][1])+")", cells[0].row, cells[0].col)
 			return true
 		}
 	}
@@ -540,13 +547,8 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 	return false
 }
 
-func logMove(msg string, val string, r int, c int) {
-	fmt.Print(msg)
-	fmt.Print(" for ")
-	fmt.Print(val)
-	fmt.Print(" @ (")
-	fmt.Print(c + 1)
-	fmt.Print(",")
-	fmt.Print(r + 1)
-	fmt.Println(")")
+func (s *Solver) logMove(msg string, val string, r int, c int) {
+	if !s.silent {
+		fmt.Println(msg, "for", val, "@ (", c+1, ",", r+1, ")")
+	}
 }

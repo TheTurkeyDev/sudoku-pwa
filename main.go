@@ -1,53 +1,45 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-	// generator := &Generator{}
-	// generator.Generate()
-	// board := copy2Darray(generator.board)
-
-	// printBoard(board)
-	// fmt.Println()
-
-	// board[2][2] = 0
-
-	// printBoard(board)
-	// fmt.Println()
+	generator := &Generator{}
+	board, difficulty := generator.Generate()
+	generator.board.printBoard()
+	fmt.Print("Board Difficulty: ")
+	fmt.Println(difficulty)
+	board.printBoard()
 
 	// board := boardFromString("007000100103905700698210530030600020500070001070001040012094678004106209005000400") // Beginner
 	// board := boardFromString("100500700000740000090002010003050480900000005085090600060200030000063000004005002") // Easy Single Position, Single Candidate
 	// board := boardFromString("906008070500030000704950002491000508000000000603000724100089203000040007060500109") // Medium  Single Position, Single Candidate, Candidate Lines
 	// board := boardFromString("800204600007000001000050830900500000148060275000001009082070000700000500003809006") // Tricky Single Position, Single Candidate, Candidate Lines, Multiple Lines
 	// board := boardFromString("000780420020095008007000000000360005102908307300071000000000600200630070078019000") // Tricky Single Position, Single Candidate, Candidate Lines, Double Pairs, Naked Pairs, Hidden Pairs
-	board := boardFromString("060500000100004609700010800040000200000842000009000010005080007902600005000005080") // Fiendish Single Position, Single Candidate, Candidate Lines, Multiple Lines, Naked Pairs, Naked Triples, Hidden Pairs
+	// Can't solve yet. Naked triple... board := boardFromString("060500000100004609700010800040000200000842000009000010005080007902600005000005080") // Fiendish Single Position, Single Candidate, Candidate Lines, Multiple Lines, Naked Pairs, Naked Triples, Hidden Pairs
 
-	board.printBoard()
+	// fmt.Println("Test")
+	// board := boardFromString("200409003070000805000008000000003080120000094060800000000700000902000030400906008")
 
-	solver := &Solver{
-		board: board,
-	}
-	solver.Solve()
-
-	fmt.Print("Board Difficulty: ")
-	fmt.Println(solver.difficulty)
-	board.printBoard()
+	// solver := &Solver{
+	// 	board: board.Copy(),
+	// }
+	// solver.Silent()
+	// solver.Solve()
+	// fmt.Println(solver.difficulty)
 }
 
-func boardFromString(str string) *Board {
-	board := &Board{}
-	board.InitEmpty()
+// func boardFromString(str string) *Board {
+// 	board := &Board{}
+// 	board.InitEmpty()
 
-	for i := 0; i < len(str); i++ {
-		r := i / 9
-		c := i % 9
-		board.board[r][c] = int(str[i] - '0')
-	}
+// 	for i := 0; i < len(str); i++ {
+// 		r := i / 9
+// 		c := i % 9
+// 		board.board[r][c] = int(str[i] - '0')
+// 	}
 
-	return board
-}
+// 	return board
+// }
 
 func Copy2Darray(src [][]int) [][]int {
 	cpy := make([][]int, len(src))

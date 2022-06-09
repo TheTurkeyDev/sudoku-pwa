@@ -20,6 +20,13 @@ func (b *Board) InitEmpty() {
 	}
 }
 
+func (b *Board) Copy() *Board {
+	return &Board{
+		board:   Copy2Darray(b.board),
+		options: Copy3Darray(b.options),
+	}
+}
+
 func (b *Board) PlaceNumber(row int, column int, value int) [][][]int {
 	b.board[row][column] = value
 	b.options[row][column] = []int{}
@@ -53,6 +60,8 @@ func (b *Board) GenerateOptions() {
 			if b.board[r][c] != 0 {
 				b.options[r][c] = []int{}
 				continue
+			} else {
+				b.options[r][c] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 			}
 
 			for i := 0; i < 9; i++ {
