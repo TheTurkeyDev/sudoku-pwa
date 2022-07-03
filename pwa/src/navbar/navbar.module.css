@@ -1,0 +1,12 @@
+.Navbar {
+    background-color: var(--navbar-color);
+    color: var(--navbar-on);
+
+    display: flex;
+    flex-direction: row;
+    padding: 0 8px;
+}
+
+.Filler {
+    flex-grow: 1;
+}
