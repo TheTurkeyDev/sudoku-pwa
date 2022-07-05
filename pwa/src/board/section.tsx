@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import styles from './section.module.css';
+import styles from './css/section.module.css';
 
 export const Section = () => {
     return (

@@ -1,4 +1,4 @@
-import styles from './board.module.css';
+import styles from './css/board.module.css';
 import { Section } from './section';
 
 export const Board = () => {
