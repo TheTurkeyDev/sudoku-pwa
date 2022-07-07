@@ -5,7 +5,7 @@ export const Board = () => {
     return (
         <div class={styles.Board}>
             {
-                Array.from(Array(9)).map(() => <Section />)
+                Array.from(Array(9)).map((_, i) => <Section id={i} />)
             }
         </div>
     );

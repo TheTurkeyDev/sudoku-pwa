@@ -1,10 +1,17 @@
+import { useSudoku } from '../context/sudoku';
 import styles from './css/options.module.css';
 
-export const Options = () => {
+type OptionsProps = {
+    id: number
+}
+
+export const Options = ({ id }: OptionsProps) => {
+    const { options } = useSudoku();
+
     return (
         <div class={styles.Options}>
             {
-                Array.from(Array(9)).map((_, i) => <span>{i + 1}</span>)
+                options()[id].map(v => <span style={{ "grid-row": v / 3, "grid-column": v % 3 }}>{v}</span>)
             }
         </div>
     )

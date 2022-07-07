@@ -1,6 +1,8 @@
 .Board {
     justify-self: center;
 
+    margin-top: 32px;
+
     display: grid;
     width: min-content;
     height: min-content;
