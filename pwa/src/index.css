@@ -34,9 +34,9 @@ html[data-theme='dark'] {
   --inputs-on: #fff;
   --inputs-on-variant: #899295;
   --inputs-on-disabled: #b3babd;
-  --primary-color: #b3babd;
+  --primary-color: #009FBF;
   --primary-on: #fff;
-  --secondary-color: #009FBF;
+  --secondary-color: #b3babd;
   --secondary-on: #009FBF;
   --error-color: #ba1b1b;
   --error-on: #fff;
@@ -87,4 +87,21 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+button {
+  background-color: var(--surface-on);
+  color: var(--surface-color);
+  border: 0px;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button:focus {
+  cursor: pointer;
+  outline: 2px solid var(--primary-color);
 }

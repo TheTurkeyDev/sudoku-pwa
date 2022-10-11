@@ -3,5 +3,5 @@
   height: 100vh;
   text-align: center;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr 4em;
 }

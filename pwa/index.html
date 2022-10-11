@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
+  <script src="/static/wasm_exec.js"></script>
+  <script>
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch("/static/main.wasm"), go.importObject).then((result) => {
+      go.run(result.instance);
+    });
+  </script>
   <title>Solid App</title>
 </head>
 

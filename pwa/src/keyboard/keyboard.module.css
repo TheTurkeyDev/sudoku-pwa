@@ -1,0 +1,19 @@
+.KeyboardWrapper {
+    width: auto;
+    height: auto;
+    margin-inline: auto;
+    margin-bottom: auto;
+    display: grid;
+    grid-template-columns: repeat(11, auto);
+    gap: 12px;
+}
+
+.Key {
+    font-size: 1.5em;
+    width: fit-content;
+}
+
+.KeySelected {
+    background-color: var(--primary-color);
+    color: var(--color);
+}

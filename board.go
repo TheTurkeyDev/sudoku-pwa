@@ -22,8 +22,8 @@ func (b *Board) InitEmpty() {
 
 func (b *Board) Copy() *Board {
 	return &Board{
-		board:   Copy2Darray(b.board),
-		options: Copy3Darray(b.options),
+		board:   Copy2DArray(b.board),
+		options: Copy3DArray(b.options),
 	}
 }
 

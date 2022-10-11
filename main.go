@@ -1,14 +1,24 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"syscall/js"
+)
 
+// WASM: GOOS=js GOARCH=wasm go build -o pwa/static/main.wasm .
 func main() {
-	generator := &Generator{}
-	board, difficulty := generator.Generate()
-	generator.board.printBoard()
-	fmt.Print("Board Difficulty: ")
-	fmt.Println(difficulty)
-	board.printBoard()
+	done := make(chan struct{}, 0)
+
+	fmt.Println("|| Sudoku Generator ||")
+	js.Global().Set("generateBoard", js.FuncOf(generateBoard))
+
+	<-done
+	// generator := &Generator{}
+	// board, difficulty := generator.Generate()
+	// generator.board.printBoard()
+	// fmt.Print("Board Difficulty: ")
+	// fmt.Println(difficulty)
+	// board.printBoard()
 
 	// board := boardFromString("007000100103905700698210530030600020500070001070001040012094678004106209005000400") // Beginner
 	// board := boardFromString("100500700000740000090002010003050480900000005085090600060200030000063000004005002") // Easy Single Position, Single Candidate
@@ -28,6 +38,19 @@ func main() {
 	// fmt.Println(solver.difficulty)
 }
 
+func generateBoard(_ js.Value, args []js.Value) interface{} {
+	generator := &Generator{}
+	board, _ := generator.Generate([]Difficulty{Difficulty(args[0].Int())})
+	length := len(board.board)
+	arr := make([]interface{}, length*len(board.board[0]))
+	for i := 0; i < length; i++ {
+		for j := 0; j < len(board.board[i]); j++ {
+			arr[(i*length)+j] = board.board[i][j]
+		}
+	}
+	return arr
+}
+
 // func boardFromString(str string) *Board {
 // 	board := &Board{}
 // 	board.InitEmpty()
@@ -41,7 +64,7 @@ func main() {
 // 	return board
 // }
 
-func Copy2Darray(src [][]int) [][]int {
+func Copy2DArray(src [][]int) [][]int {
 	cpy := make([][]int, len(src))
 	for i := range src {
 		cpy[i] = make([]int, len(src[i]))
@@ -51,7 +74,7 @@ func Copy2Darray(src [][]int) [][]int {
 	return cpy
 }
 
-func Copy3Darray(src [][][]int) [][][]int {
+func Copy3DArray(src [][][]int) [][][]int {
 	cpy := make([][][]int, len(src))
 	for i := range src {
 		cpy[i] = make([][]int, len(src[i]))

@@ -11,7 +11,9 @@ export const Options = ({ id }: OptionsProps) => {
     return (
         <div class={styles.Options}>
             {
-                options()[id].map(v => <span style={{ "grid-row": v / 3, "grid-column": v % 3 }}>{v}</span>)
+                [1, 2, 3, 4, 5, 6, 7, 8, 9].map(v => (
+                    <span>{options()[id].includes(v) ? v : ''}</span>
+                ))
             }
         </div>
     )

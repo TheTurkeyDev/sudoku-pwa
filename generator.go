@@ -10,7 +10,11 @@ type Generator struct {
 	board *Board
 }
 
-func (g *Generator) Generate() (*Board, Difficulty) {
+func (g *Generator) GenerateAnyDifficulty() (*Board, Difficulty) {
+	return g.Generate([]Difficulty{Easy, Medium, Hard})
+}
+
+func (g *Generator) Generate(rangeList []Difficulty) (*Board, Difficulty) {
 	rand.Seed(time.Now().UnixNano())
 	g.makeNewBoard()
 
@@ -23,7 +27,6 @@ func (g *Generator) Generate() (*Board, Difficulty) {
 	}
 
 	difficulty := -1
-	rangeList := []Difficulty{Easy, Medium, Hard}
 	targetDifficulty := rangeList[rand.Intn(len(rangeList))]
 	board := g.board.Copy()
 	fmt.Println("Generating:", targetDifficulty.Name(), "puzzle")
@@ -105,11 +108,11 @@ func getCellCounterPart(c *Cell) *Cell {
 func (g *Generator) fillCell(cell int) bool {
 	r := cell / 9
 	c := cell % 9
-	optsCpy := Copy3Darray(g.board.options)
+	optsCpy := Copy3DArray(g.board.options)
 
 	complete := false
 	for !complete {
-		g.board.options = Copy3Darray(optsCpy)
+		g.board.options = Copy3DArray(optsCpy)
 		opts := g.board.options[r][c]
 		if len(opts) == 0 {
 			return false
