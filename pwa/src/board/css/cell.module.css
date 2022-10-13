@@ -18,8 +18,30 @@
     border: 3px solid var(--primary-color);
 }
 
+.CellHighlight {
+    background-color: var(--highlight);
+}
+
 .Number {
     justify-self: center;
     align-self: center;
     margin: 0;
+}
+
+.Unlocked {
+    color: var(--primary-color);
+}
+
+@media only screen and (max-width: 700px) {
+    .Cell:hover {
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        border: 2px solid var(--primary-color);
+    }
+    
+    .CellSelected {
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        border: 2px solid var(--primary-color);
+    }
 }

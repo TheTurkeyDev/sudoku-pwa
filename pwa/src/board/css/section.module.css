@@ -4,3 +4,9 @@
     grid-template-rows: 1fr 1fr 1fr;
     border: 3px solid var(--surface-on);
 }
+
+@media only screen and (max-width: 700px) {
+    .Section {
+        border: 1px solid var(--surface-on);
+    }
+}

@@ -14,6 +14,7 @@ type SudokuStore = {
   selectedCell: Accessor<number>,
   setEditingOptions: Setter<boolean>,
   editingOptions: Accessor<boolean>,
+  isLockedValue: (index: number) => boolean,
 }
 
 const SudokuContext = createContext<SudokuStore | null>(null);
@@ -54,8 +55,6 @@ export function SudokuProvider(props: any) {
 
   const toggleOption = (index: number, option: number) => {
     options()[index].includes(option) ? removeOption(index, option) : addOption(index, option)
-    
-    console.log(options()[index])
   }
 
   const onInput = (value: number) => {
@@ -64,6 +63,8 @@ export function SudokuProvider(props: any) {
     else
       setBoardValue(selectedCell(), value);
   }
+
+  const isLockedValue = (index: number) => (baseBoard()[index] !== 0)
 
   const store: SudokuStore = {
     board,
@@ -77,7 +78,8 @@ export function SudokuProvider(props: any) {
     setSelectedCell,
     selectedCell,
     setEditingOptions,
-    editingOptions
+    editingOptions,
+    isLockedValue(index: number) { return baseBoard()[index] !== 0 },
   };
 
   return (

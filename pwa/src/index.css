@@ -18,6 +18,7 @@
   --secondary-on: #009FBF;
   --error-color: #ba1b1b;
   --error-on: #fff;
+  --highlight: #ffffff33;
 }
 
 html[data-theme='dark'] {
@@ -40,6 +41,7 @@ html[data-theme='dark'] {
   --secondary-on: #009FBF;
   --error-color: #ba1b1b;
   --error-on: #fff;
+  --highlight: #ffffff33;
 }
 
 html[data-theme='light'] {
@@ -62,6 +64,7 @@ html[data-theme='light'] {
   --secondary-on: #fff;
   --error-color: #ffb4a9;
   --error-on: #680003;
+  --highlight: #00000044;
 }
 
 html, body, #root {
