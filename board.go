@@ -3,40 +3,40 @@ package main
 import "fmt"
 
 type Board struct {
-	board   [][]int
-	options [][][]int
+	Board   [][]int   `json:"board"`
+	Options [][][]int `json:"options"`
 }
 
 func (b *Board) InitEmpty() {
-	b.board = make([][]int, 9)
-	b.options = make([][][]int, 9)
-	for i := range b.board {
-		b.board[i] = make([]int, 9)
-		b.options[i] = make([][]int, 9)
-		for j := range b.options[i] {
-			b.board[i][j] = 0
-			b.options[i][j] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	b.Board = make([][]int, 9)
+	b.Options = make([][][]int, 9)
+	for i := range b.Board {
+		b.Board[i] = make([]int, 9)
+		b.Options[i] = make([][]int, 9)
+		for j := range b.Options[i] {
+			b.Board[i][j] = 0
+			b.Options[i][j] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 		}
 	}
 }
 
 func (b *Board) Copy() *Board {
 	return &Board{
-		board:   Copy2DArray(b.board),
-		options: Copy3DArray(b.options),
+		Board:   Copy2DArray(b.Board),
+		Options: Copy3DArray(b.Options),
 	}
 }
 
 func (b *Board) PlaceNumber(row int, column int, value int) [][][]int {
-	b.board[row][column] = value
-	b.options[row][column] = []int{}
+	b.Board[row][column] = value
+	b.Options[row][column] = []int{}
 
 	for i := 0; i < 9; i++ {
 		if i != row {
-			b.options[i][column] = RemoveValue(b.options[i][column], value)
+			b.Options[i][column] = RemoveValue(b.Options[i][column], value)
 		}
 		if i != column {
-			b.options[row][i] = RemoveValue(b.options[row][i], value)
+			b.Options[row][i] = RemoveValue(b.Options[row][i], value)
 		}
 	}
 
@@ -48,28 +48,28 @@ func (b *Board) PlaceNumber(row int, column int, value int) [][][]int {
 		}
 		adjRow := ((row / 3) * 3) + (i / 3)
 		adjColumn := ((column / 3) * 3) + (i % 3)
-		b.options[adjRow][adjColumn] = RemoveValue(b.options[adjRow][adjColumn], value)
+		b.Options[adjRow][adjColumn] = RemoveValue(b.Options[adjRow][adjColumn], value)
 	}
 
-	return b.options
+	return b.Options
 }
 
 func (b *Board) GenerateOptions() {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
-			if b.board[r][c] != 0 {
-				b.options[r][c] = []int{}
+			if b.Board[r][c] != 0 {
+				b.Options[r][c] = []int{}
 				continue
 			} else {
-				b.options[r][c] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+				b.Options[r][c] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 			}
 
 			for i := 0; i < 9; i++ {
 				if i != r {
-					b.options[r][c] = RemoveValue(b.options[r][c], b.board[i][c])
+					b.Options[r][c] = RemoveValue(b.Options[r][c], b.Board[i][c])
 				}
 				if i != c {
-					b.options[r][c] = RemoveValue(b.options[r][c], b.board[r][i])
+					b.Options[r][c] = RemoveValue(b.Options[r][c], b.Board[r][i])
 				}
 			}
 			innerIndex := ((r % 3) * 3) + (c % 3)
@@ -80,7 +80,7 @@ func (b *Board) GenerateOptions() {
 				}
 				adjRow := ((r / 3) * 3) + (i / 3)
 				adjColumn := ((c / 3) * 3) + (i % 3)
-				b.options[r][c] = RemoveValue(b.options[r][c], b.board[adjRow][adjColumn])
+				b.Options[r][c] = RemoveValue(b.Options[r][c], b.Board[adjRow][adjColumn])
 			}
 		}
 	}
@@ -89,7 +89,7 @@ func (b *Board) GenerateOptions() {
 func (b *Board) IsSolved() bool {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
-			if b.board[r][c] == 0 {
+			if b.Board[r][c] == 0 {
 				return false
 			}
 		}
@@ -102,8 +102,8 @@ func (b *Board) printBoard() {
 	for r := 0; r < 9; r++ {
 		fmt.Print("| ")
 		for c := 0; c < 9; c++ {
-			if b.board[r][c] != 0 {
-				fmt.Print(b.board[r][c])
+			if b.Board[r][c] != 0 {
+				fmt.Print(b.Board[r][c])
 			} else {
 				fmt.Print(" ")
 			}

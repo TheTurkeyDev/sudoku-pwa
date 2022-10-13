@@ -1,8 +1,10 @@
 import { createSignal, createContext, useContext, Setter, Accessor } from "solid-js";
+import { BoardType } from "../board/board-type";
 
 type SudokuStore = {
   board: Accessor<number[]>,
   options: Accessor<number[][]>,
+  loadBoard: (board: BoardType) => void,
   setBoardValue: (index: number, value: number) => void,
   addOption: (index: number, option: number) => void,
   removeOption: (index: number, option: number) => void,
@@ -17,13 +19,23 @@ type SudokuStore = {
 const SudokuContext = createContext<SudokuStore | null>(null);
 
 export function SudokuProvider(props: any) {
+  const [baseBoard, setBaseBoard] = createSignal<number[]>(Array.from(Array(81)).map(() => 0));
   const [board, setBoard] = createSignal<number[]>(Array.from(Array(81)).map(() => 0));
   const [options, setOptions] = createSignal<number[][]>(Array.from(Array(81)).map(() => []));
   const [selectedCell, setSelectedCell] = createSignal<number>(-1);
   const [editingOptions, setEditingOptions] = createSignal<boolean>(false);
 
+  const loadBoard = (board: BoardType) => {
+    const flat = board.board.flatMap(n => n)
+    setBoard(flat)
+    setBaseBoard(flat)
+    setOptions(board.options.flatMap(o => o))
+    setSelectedCell(-1)
+    setEditingOptions(false)
+  }
+
   const setBoardValue = (index: number, value: number) => {
-    if (index < 0 || index > 80)
+    if (index < 0 || index > 80 || baseBoard()[index] !== 0)
       return;
     setBoard(old => [...old.slice(0, index), value, ...old.slice(index + 1)]);
   }
@@ -56,6 +68,7 @@ export function SudokuProvider(props: any) {
   const store: SudokuStore = {
     board,
     options,
+    loadBoard,
     setBoardValue,
     addOption,
     removeOption,
@@ -66,15 +79,6 @@ export function SudokuProvider(props: any) {
     setEditingOptions,
     editingOptions
   };
-
-  store.setBoardValue(15, 5);
-  store.setBoardValue(18, 6);
-  store.setBoardValue(27, 7);
-  store.addOption(65, 7);
-  store.addOption(65, 3);
-  store.addOption(65, 2);
-  store.addOption(69, 1);
-  store.addOption(69, 8);
 
   return (
     <SudokuContext.Provider value={store}>

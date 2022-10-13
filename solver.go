@@ -107,7 +107,7 @@ func (s *Solver) Silent() {
 func (s *Solver) noOptions() bool {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
-			if s.board.board[r][c] == 0 && len(s.board.options[r][c]) == 0 {
+			if s.board.Board[r][c] == 0 && len(s.board.Options[r][c]) == 0 {
 				return true
 			}
 		}
@@ -118,12 +118,12 @@ func (s *Solver) noOptions() bool {
 func (s *Solver) singleCandidate() bool {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
-			if s.board.board[r][c] != 0 {
+			if s.board.Board[r][c] != 0 {
 				continue
 			}
-			if len(s.board.options[r][c]) == 1 {
-				s.logMove("Single Candidate", strconv.Itoa(s.board.options[r][c][0]), r, c)
-				s.board.PlaceNumber(r, c, s.board.options[r][c][0])
+			if len(s.board.Options[r][c]) == 1 {
+				s.logMove("Single Candidate", strconv.Itoa(s.board.Options[r][c][0]), r, c)
+				s.board.PlaceNumber(r, c, s.board.Options[r][c][0])
 				return true
 			}
 		}
@@ -134,11 +134,11 @@ func (s *Solver) singleCandidate() bool {
 func (s *Solver) singlePosition() bool {
 	for r := 0; r < 9; r++ {
 		for c := 0; c < 9; c++ {
-			if s.board.board[r][c] != 0 {
+			if s.board.Board[r][c] != 0 {
 				continue
 			}
 
-			opts := s.board.options[r][c]
+			opts := s.board.Options[r][c]
 
 			optsRowCpy := make([]int, len(opts))
 			copy(optsRowCpy, opts)
@@ -149,10 +149,10 @@ func (s *Solver) singlePosition() bool {
 
 			for i := 0; i < 9; i++ {
 				if i != r {
-					optsRowCpy = RemoveValues(optsRowCpy, s.board.options[i][c]...)
+					optsRowCpy = RemoveValues(optsRowCpy, s.board.Options[i][c]...)
 				}
 				if i != c {
-					optsColCpy = RemoveValues(optsColCpy, s.board.options[r][i]...)
+					optsColCpy = RemoveValues(optsColCpy, s.board.Options[r][i]...)
 				}
 			}
 			innerIndex := ((r % 3) * 3) + (c % 3)
@@ -163,7 +163,7 @@ func (s *Solver) singlePosition() bool {
 				}
 				adjRow := ((r / 3) * 3) + (i / 3)
 				adjColumn := ((c / 3) * 3) + (i % 3)
-				optsBoxCpy = RemoveValues(optsBoxCpy, s.board.options[adjRow][adjColumn]...)
+				optsBoxCpy = RemoveValues(optsBoxCpy, s.board.Options[adjRow][adjColumn]...)
 			}
 
 			if len(optsRowCpy) == 1 {
@@ -196,7 +196,7 @@ func (s *Solver) candidateLines() bool {
 				opts := []int{}
 				// Add all the values in the row in the current box to a list of options to check for a candidate
 				for i := 0; i < 3; i++ {
-					opts = AppendIfMissing(opts, s.board.options[(r*3)+sr][(c*3)+i]...)
+					opts = AppendIfMissing(opts, s.board.Options[(r*3)+sr][(c*3)+i]...)
 				}
 				// Remove all values in the box from the options as they can't be candidates
 				for i := 0; i < 9; i++ {
@@ -204,7 +204,7 @@ func (s *Solver) candidateLines() bool {
 					if i/3 == sr {
 						continue
 					}
-					opts = RemoveValues(opts, s.board.options[(r*3)+(i/3)][(c*3)+(i%3)]...)
+					opts = RemoveValues(opts, s.board.Options[(r*3)+(i/3)][(c*3)+(i%3)]...)
 				}
 
 				// If the options list still has values, we have a candidate!
@@ -218,10 +218,10 @@ func (s *Solver) candidateLines() bool {
 								continue
 							}
 
-							indx := FindValueIndex(s.board.options[(r*3)+sr][j], opts[i])
+							indx := FindValueIndex(s.board.Options[(r*3)+sr][j], opts[i])
 							// If this cell contains the candidate, remove it and mark that we have removed an option
 							if indx != -1 {
-								s.board.options[(r*3)+sr][j] = RemoveIndex(s.board.options[(r*3)+sr][j], indx)
+								s.board.Options[(r*3)+sr][j] = RemoveIndex(s.board.Options[(r*3)+sr][j], indx)
 								removed = true
 							}
 						}
@@ -241,7 +241,7 @@ func (s *Solver) candidateLines() bool {
 				opts := []int{}
 				// Add all the values in the column in the current box to a list of options to check for a candidate
 				for i := 0; i < 3; i++ {
-					opts = AppendIfMissing(opts, s.board.options[(r*3)+i][(c*3)+sc]...)
+					opts = AppendIfMissing(opts, s.board.Options[(r*3)+i][(c*3)+sc]...)
 				}
 				// Remove all values in the box from the options as they can't be candidates
 				for i := 0; i < 9; i++ {
@@ -249,7 +249,7 @@ func (s *Solver) candidateLines() bool {
 					if i%3 == sc {
 						continue
 					}
-					opts = RemoveValues(opts, s.board.options[(r*3)+(i/3)][(c*3)+(i%3)]...)
+					opts = RemoveValues(opts, s.board.Options[(r*3)+(i/3)][(c*3)+(i%3)]...)
 				}
 
 				// If the options list still has values, we have a candidate!
@@ -263,10 +263,10 @@ func (s *Solver) candidateLines() bool {
 								continue
 							}
 
-							indx := FindValueIndex(s.board.options[j][(c*3)+sc], opts[i])
+							indx := FindValueIndex(s.board.Options[j][(c*3)+sc], opts[i])
 							// If this cell contains the candidate, remove it and mark that we have removed an option
 							if indx != -1 {
-								s.board.options[j][(c*3)+sc] = RemoveIndex(s.board.options[j][(c*3)+sc], indx)
+								s.board.Options[j][(c*3)+sc] = RemoveIndex(s.board.Options[j][(c*3)+sc], indx)
 								removed = true
 							}
 						}
@@ -294,7 +294,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 				opts := []int{}
 				// Add all the values in the row in the current box to a list of options to check for a candidate
 				for i := 0; i < 3; i++ {
-					opts = AppendIfMissing(opts, s.board.options[(r*3)+sr][(c*3)+i]...)
+					opts = AppendIfMissing(opts, s.board.Options[(r*3)+sr][(c*3)+i]...)
 				}
 				// Remove all values in the rest of the row from the options as they can't be candidates
 				for i := 0; i < 9; i++ {
@@ -302,7 +302,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 					if i/3 == c {
 						continue
 					}
-					opts = RemoveValues(opts, s.board.options[(r*3)+sr][i]...)
+					opts = RemoveValues(opts, s.board.Options[(r*3)+sr][i]...)
 				}
 
 				// If the options list still has values, we have a candidate!
@@ -316,10 +316,10 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 								continue
 							}
 
-							indx := FindValueIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], opts[i])
+							indx := FindValueIndex(s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)], opts[i])
 							// If this cell contains the candidate, remove it and mark that we have removed an option
 							if indx != -1 {
-								s.board.options[(r*3)+(j/3)][(c*3)+(j%3)] = RemoveIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], indx)
+								s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)] = RemoveIndex(s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)], indx)
 								removed = true
 							}
 						}
@@ -339,7 +339,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 				opts := []int{}
 				// Add all the values in the column in the current box to a list of options to check for a candidate
 				for i := 0; i < 3; i++ {
-					opts = AppendIfMissing(opts, s.board.options[(r*3)+i][(c*3)+sc]...)
+					opts = AppendIfMissing(opts, s.board.Options[(r*3)+i][(c*3)+sc]...)
 				}
 				// Remove all values in the rest of the column from the options as they can't be candidates
 				for i := 0; i < 9; i++ {
@@ -347,7 +347,7 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 					if i/3 == r {
 						continue
 					}
-					opts = RemoveValues(opts, s.board.options[i][(c*3)+sc]...)
+					opts = RemoveValues(opts, s.board.Options[i][(c*3)+sc]...)
 				}
 
 				// If the options list still has values, we have a candidate!
@@ -361,10 +361,10 @@ func (s *Solver) doublePairOrMultipleLines() bool {
 								continue
 							}
 
-							indx := FindValueIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], opts[i])
+							indx := FindValueIndex(s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)], opts[i])
 							// If this cell contains the candidate, remove it and mark that we have removed an option
 							if indx != -1 {
-								s.board.options[(r*3)+(j/3)][(c*3)+(j%3)] = RemoveIndex(s.board.options[(r*3)+(j/3)][(c*3)+(j%3)], indx)
+								s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)] = RemoveIndex(s.board.Options[(r*3)+(j/3)][(c*3)+(j%3)], indx)
 								removed = true
 							}
 						}
@@ -402,12 +402,12 @@ func (s *Solver) checkNakedCandidateCells(length int, cells []*Cell, dir string)
 	occur := make(map[string][]*Cell)
 	for i := range cells {
 		cell := cells[i]
-		if s.board.board[cell.row][cell.col] != 0 {
+		if s.board.Board[cell.row][cell.col] != 0 {
 			continue
 		}
 		// Convert options list ex: [1,2,3,4] to a string ex:"1,2,3,4" for use as a key
 
-		s, _ := json.Marshal(s.board.options[cell.row][cell.col])
+		s, _ := json.Marshal(s.board.Options[cell.row][cell.col])
 		opts := strings.ReplaceAll(strings.Trim(string(s), "[]"), ",", "")
 		// Increment the count of this key
 		occur[opts] = append(occur[opts], &Cell{row: cell.row, col: cell.col})
@@ -420,20 +420,20 @@ func (s *Solver) checkNakedCandidateCells(length int, cells []*Cell, dir string)
 			candidates := strings.Split(k, "")
 			for i := range cells {
 				cell := cells[i]
-				if s.board.board[cell.row][cell.col] != 0 {
+				if s.board.Board[cell.row][cell.col] != 0 {
 					continue
 				}
 				// Ignore the cells with this key
-				if strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s.board.options[cell.row][cell.col])), ""), "[]") == k {
+				if strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s.board.Options[cell.row][cell.col])), ""), "[]") == k {
 					continue
 				}
 
 				// Attempt to remove each of the candidates from the rest of the cells in the row or column
 				for j := range candidates {
-					indx := FindValueIndex(s.board.options[cell.row][cell.col], int(candidates[j][0]-'0'))
+					indx := FindValueIndex(s.board.Options[cell.row][cell.col], int(candidates[j][0]-'0'))
 					// If this cell contains the candidate, remove it and mark that we have removed an option
 					if indx != -1 {
-						s.board.options[cell.row][cell.col] = RemoveIndex(s.board.options[cell.row][cell.col], indx)
+						s.board.Options[cell.row][cell.col] = RemoveIndex(s.board.Options[cell.row][cell.col], indx)
 						removed = true
 					}
 				}
@@ -476,8 +476,8 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 	for i := range cells {
 		cell := cells[i]
 
-		for j := range s.board.options[cell.row][cell.col] {
-			val := strconv.Itoa(s.board.options[cell.row][cell.col][j])
+		for j := range s.board.Options[cell.row][cell.col] {
+			val := strconv.Itoa(s.board.Options[cell.row][cell.col][j])
 			occur[val] += 1
 		}
 	}
@@ -508,7 +508,7 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 			// Does cell have all vals in combo
 			valid := true
 			for v := range combos[c] {
-				if FindValueIndex(s.board.options[cell.row][cell.col], combos[c][v]) == -1 {
+				if FindValueIndex(s.board.Options[cell.row][cell.col], combos[c][v]) == -1 {
 					valid = false
 					break
 				}
@@ -530,9 +530,9 @@ func (s *Solver) checkHiddenCandidatesCells(length int, cells []*Cell, dir strin
 		for i := range cells {
 			cell := cells[i]
 
-			if FindValueIndex(s.board.options[cell.row][cell.col], combos[c][0]) != -1 && len(s.board.options[cell.row][cell.col]) != len(combos[c]) {
-				s.board.options[cell.row][cell.col] = make([]int, len(combos[c]))
-				copy(s.board.options[cell.row][cell.col], combos[c])
+			if FindValueIndex(s.board.Options[cell.row][cell.col], combos[c][0]) != -1 && len(s.board.Options[cell.row][cell.col]) != len(combos[c]) {
+				s.board.Options[cell.row][cell.col] = make([]int, len(combos[c]))
+				copy(s.board.Options[cell.row][cell.col], combos[c])
 				removed = true
 			}
 		}

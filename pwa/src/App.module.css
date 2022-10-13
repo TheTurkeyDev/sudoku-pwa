@@ -1,7 +1,16 @@
 .App {
   width: 100vw;
   height: 100vh;
-  text-align: center;
   display: grid;
-  grid-template-rows: auto 1fr 4em;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+}
+
+.MainContent {
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  width: max-content;
+  grid-template-rows: auto auto auto auto auto auto;
+  gap: 8px;
 }

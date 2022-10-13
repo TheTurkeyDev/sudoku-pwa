@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"syscall/js"
 )
@@ -41,14 +42,17 @@ func main() {
 func generateBoard(_ js.Value, args []js.Value) interface{} {
 	generator := &Generator{}
 	board, _ := generator.Generate([]Difficulty{Difficulty(args[0].Int())})
-	length := len(board.board)
-	arr := make([]interface{}, length*len(board.board[0]))
-	for i := 0; i < length; i++ {
-		for j := 0; j < len(board.board[i]); j++ {
-			arr[(i*length)+j] = board.board[i][j]
-		}
+	callback := args[len(args)-1:][0]
+
+	b, err := json.Marshal(board)
+	if err != nil {
+		fmt.Println(err)
+		callback.Invoke(err, "")
+		return nil
 	}
-	return arr
+
+	callback.Invoke(js.Null(), string(b))
+	return nil
 }
 
 // func boardFromString(str string) *Board {

@@ -51,10 +51,10 @@ func (g *Generator) Generate(rangeList []Difficulty) (*Board, Difficulty) {
 		cells = RemoveCellValue(cells, cellToRemove)
 		cellCounterPart := getCellCounterPart(cellToRemove)
 		cells = RemoveCellValue(cells, cellCounterPart)
-		cellToRemoveOrigVal := board.board[cellToRemove.row][cellToRemove.col]
-		cellCounterPartOrigVal := board.board[cellCounterPart.row][cellCounterPart.col]
-		board.board[cellToRemove.row][cellToRemove.col] = 0
-		board.board[cellCounterPart.row][cellCounterPart.col] = 0
+		cellToRemoveOrigVal := board.Board[cellToRemove.row][cellToRemove.col]
+		cellCounterPartOrigVal := board.Board[cellCounterPart.row][cellCounterPart.col]
+		board.Board[cellToRemove.row][cellToRemove.col] = 0
+		board.Board[cellCounterPart.row][cellCounterPart.col] = 0
 
 		solver := &Solver{
 			board: board.Copy(),
@@ -64,8 +64,8 @@ func (g *Generator) Generate(rangeList []Difficulty) (*Board, Difficulty) {
 		difficulty = solver.difficulty
 
 		if difficulty == -1 || difficulty > targetDifficulty.getRangeMax() {
-			board.board[cellToRemove.row][cellToRemove.col] = cellToRemoveOrigVal
-			board.board[cellCounterPart.row][cellCounterPart.col] = cellCounterPartOrigVal
+			board.Board[cellToRemove.row][cellToRemove.col] = cellToRemoveOrigVal
+			board.Board[cellCounterPart.row][cellCounterPart.col] = cellCounterPartOrigVal
 		}
 	}
 	return board, Difficulty(difficulty)
@@ -108,18 +108,18 @@ func getCellCounterPart(c *Cell) *Cell {
 func (g *Generator) fillCell(cell int) bool {
 	r := cell / 9
 	c := cell % 9
-	optsCpy := Copy3DArray(g.board.options)
+	optsCpy := Copy3DArray(g.board.Options)
 
 	complete := false
 	for !complete {
-		g.board.options = Copy3DArray(optsCpy)
-		opts := g.board.options[r][c]
+		g.board.Options = Copy3DArray(optsCpy)
+		opts := g.board.Options[r][c]
 		if len(opts) == 0 {
 			return false
 		}
 		chosenIndx := rand.Intn(len(opts))
 		val := opts[chosenIndx]
-		g.board.options[r][c] = RemoveIndex(opts, chosenIndx)
+		g.board.Options[r][c] = RemoveIndex(opts, chosenIndx)
 		optsCpy[r][c] = RemoveValue(optsCpy[r][c], val)
 		g.board.PlaceNumber(r, c, val)
 

@@ -7,9 +7,9 @@ import { SudokuProvider } from './context/sudoku';
 
 declare global {
     interface Window {
-        generateBoard: (difficulty: number) => any
+        generateBoard: (difficulty: number, callback: (error: string, board: any) => void) => void
     }
- }
+}
 
 render(() => (
     <SudokuProvider>
