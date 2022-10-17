@@ -7,63 +7,63 @@ import { NavBar } from './navbar/navbar';
 import { SudokuPuzzle } from './sudoku-puzzle';
 
 const generateBoardPromise = (difficulty: number): Promise<string> => (
-  new Promise<string>((resolve, reject) => {
-    if (difficulty == -1) {
-      resolve('');
-      return
-    }
-
-    //It hurts
-    setTimeout(() => {
-      window.generateBoard(difficulty, (err, message) => {
-        if (err) {
-          reject(err);
-          return;
+    new Promise<string>((resolve, reject) => {
+        if (difficulty === -1) {
+            resolve('');
+            return;
         }
 
-        resolve(message);
-      });
-    }, 100)
-  })
-)
+        //It hurts
+        setTimeout(() => {
+            window.generateBoard(difficulty, (err, message) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(message);
+            });
+        }, 100);
+    })
+);
 
 const App = () => {
-  const { loadBoard } = useSudoku();
-  const [difficulty, setDifficulty] = createSignal<number>(-1);
-  const [boardJson] = createResource<string, number>(difficulty, generateBoardPromise);
-  const [inGame, setInGame] = createSignal<boolean>(false);
+    const { loadBoard } = useSudoku();
+    const [difficulty, setDifficulty] = createSignal<number>(-1);
+    const [boardJson] = createResource<string, number>(difficulty, generateBoardPromise);
+    const [inGame, setInGame] = createSignal<boolean>(false);
 
-  createEffect(() => {
-    const json = boardJson()
-    if (!json)
-      return
-    const board = JSON.parse(json) as BoardType;
-    loadBoard(board);
-    setInGame(true);
-  })
+    createEffect(() => {
+        const json = boardJson();
+        if (!json)
+            return;
+        const board = JSON.parse(json) as BoardType;
+        loadBoard(board);
+        setInGame(true);
+    });
 
-  const playDailyLevel = () => {
+    const playDailyLevel = () => {
     //console.log(window.generateBoard(difficulty))
-  }
+    };
 
-  return (
-    <div class={styles.App}>
-      <NavBar />
-      {
-        boardJson.loading ? <CenteredLoadingSpinner /> : (inGame() ? <SudokuPuzzle /> : (
-          <div class={styles.MainContent}>
-            <h1>Daily Sudoku</h1>
-            <hr style={{ width: '100%' }} />
-            <button onClick={playDailyLevel}>Daily Puzzle</button>
-            <button onClick={() => setDifficulty(0)}>Beginner</button>
-            <button onClick={() => setDifficulty(1)}>Easy</button>
-            <button onClick={() => setDifficulty(2)}>Medium</button>
-            <button onClick={() => setDifficulty(3)}>Hard</button>
-          </div>
-        ))
-      }
-    </div >
-  )
+    return (
+        <div class={styles.App}>
+            <NavBar />
+            {
+                boardJson.loading ? <CenteredLoadingSpinner /> : (inGame() ? <SudokuPuzzle /> : (
+                    <div class={styles.MainContent}>
+                        <h1>Daily Sudoku</h1>
+                        <hr style={{ width: '100%' }} />
+                        <button onClick={playDailyLevel}>Daily Puzzle</button>
+                        <button onClick={() => setDifficulty(0)}>Beginner</button>
+                        <button onClick={() => setDifficulty(1)}>Easy</button>
+                        <button onClick={() => setDifficulty(2)}>Medium</button>
+                        <button onClick={() => setDifficulty(3)}>Hard</button>
+                    </div>
+                ))
+            }
+        </div >
+    );
 };
 
 export default App;

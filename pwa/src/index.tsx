@@ -4,10 +4,12 @@ import { render } from 'solid-js/web';
 import './index.css';
 import App from './App';
 import { SudokuProvider } from './context/sudoku';
+import { BoardType } from './board/board-type';
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Window {
-        generateBoard: (difficulty: number, callback: (error: string, board: any) => void) => void
+        readonly generateBoard: (difficulty: number, callback: (error: string, board: BoardType) => void) => void
     }
 }
 

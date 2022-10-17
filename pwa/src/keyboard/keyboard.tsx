@@ -8,11 +8,11 @@ export const Keyboard = () => {
         if (isNaN(key) || key < 1 || key > 9)
             return;
         onInput(key);
-    }
+    };
 
     const deleteValue = () => {
         setBoardValue(selectedCell(), 0);
-    }
+    };
 
     return (
         <div class={styles.KeyboardWrapper}>
@@ -23,4 +23,4 @@ export const Keyboard = () => {
             <button class={`${styles.Key} ${editingOptions() ? styles.KeySelected : ''}`} onClick={() => setEditingOptions(!editingOptions())}>✎</button>
         </div>
     );
-}
+};

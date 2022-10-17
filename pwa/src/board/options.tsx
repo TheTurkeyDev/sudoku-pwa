@@ -2,7 +2,7 @@ import { useSudoku } from '../context/sudoku';
 import styles from './css/options.module.css';
 
 type OptionsProps = {
-    id: number
+    readonly id: number
 }
 
 export const Options = ({ id }: OptionsProps) => {
@@ -16,5 +16,5 @@ export const Options = ({ id }: OptionsProps) => {
                 ))
             }
         </div>
-    )
-}
+    );
+};

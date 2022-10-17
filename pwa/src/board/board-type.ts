@@ -1,4 +1,5 @@
 export type BoardType = {
-    board: number[][]
-    options: number[][][]
+    readonly board: readonly (readonly number[])[]
+    readonly solution: readonly (readonly number[])[]
+    readonly options: readonly (readonly (readonly number[])[])[]
 }

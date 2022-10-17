@@ -2,7 +2,7 @@ import { Cell } from './cell';
 import styles from './css/section.module.css';
 
 type SectionProps = {
-    id: number
+    readonly id: number
 }
 
 export const Section = ({ id }: SectionProps) => {
@@ -13,4 +13,4 @@ export const Section = ({ id }: SectionProps) => {
             {Array.from(Array(9)).map((_, i) => <Cell id={((rowStart + Math.floor(i / 3)) * 9) + (colStart + (i % 3))} />)}
         </div>
     );
-}
+};
