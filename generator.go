@@ -75,6 +75,7 @@ func (g *Generator) makeNewBoard() {
 	g.board = &Board{}
 	g.board.InitEmpty()
 	g.fillCell(0)
+	g.board.Solution = Copy2DArray(g.board.Board)
 }
 
 func RemoveCellValue(s []*Cell, val *Cell) []*Cell {

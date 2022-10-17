@@ -3,18 +3,22 @@ package main
 import "fmt"
 
 type Board struct {
-	Board   [][]int   `json:"board"`
-	Options [][][]int `json:"options"`
+	Solution [][]int   `json:"solution"`
+	Board    [][]int   `json:"board"`
+	Options  [][][]int `json:"options"`
 }
 
 func (b *Board) InitEmpty() {
 	b.Board = make([][]int, 9)
+	b.Solution = make([][]int, 9)
 	b.Options = make([][][]int, 9)
 	for i := range b.Board {
 		b.Board[i] = make([]int, 9)
+		b.Solution[i] = make([]int, 9)
 		b.Options[i] = make([][]int, 9)
 		for j := range b.Options[i] {
 			b.Board[i][j] = 0
+			b.Solution[i][j] = 0
 			b.Options[i][j] = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 		}
 	}
