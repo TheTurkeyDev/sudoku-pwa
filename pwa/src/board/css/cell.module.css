@@ -32,6 +32,10 @@
     color: var(--primary-color);
 }
 
+.Invalid {
+    color: var(--error-color);
+}
+
 @media only screen and (max-width: 700px) {
     .Cell:hover {
         width: calc(100% - 4px);

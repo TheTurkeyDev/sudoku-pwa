@@ -9,7 +9,7 @@ import { BoardType } from './board/board-type';
 declare global {
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Window {
-        readonly generateBoard: (difficulty: number, callback: (error: string, board: BoardType) => void) => void
+        readonly generateBoard: (difficulty: number, callback: (error: string, board: string) => void) => void
     }
 }
 

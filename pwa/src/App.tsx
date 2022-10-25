@@ -28,8 +28,7 @@ const generateBoardPromise = (difficulty: number): Promise<string> => (
 );
 
 const App = () => {
-    const { loadBoard } = useSudoku();
-    const [difficulty, setDifficulty] = createSignal<number>(-1);
+    const { loadBoard, setDifficulty, difficulty } = useSudoku();
     const [boardJson] = createResource<string, number>(difficulty, generateBoardPromise);
     const [inGame, setInGame] = createSignal<boolean>(false);
 
@@ -43,7 +42,7 @@ const App = () => {
     });
 
     const playDailyLevel = () => {
-    //console.log(window.generateBoard(difficulty))
+        //console.log(window.generateBoard(difficulty))
     };
 
     return (

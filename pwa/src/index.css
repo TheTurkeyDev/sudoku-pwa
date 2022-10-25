@@ -62,7 +62,7 @@ html[data-theme='light'] {
   --primary-on: #212529;
   --secondary-color: #00687D;
   --secondary-on: #fff;
-  --error-color: #ffb4a9;
+  --error-color: #ba1b1b;
   --error-on: #680003;
   --highlight: #00000044;
 }

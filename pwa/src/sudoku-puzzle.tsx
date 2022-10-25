@@ -2,6 +2,7 @@ import styles from './sudoku-puzzle.module.css';
 import { useSudoku } from './context/sudoku';
 import { Board } from './board/board';
 import { Keyboard } from './keyboard/keyboard';
+import { Header } from './header/header';
 
 export const SudokuPuzzle = () => {
     const { setBoardValue, setSelectedCell, selectedCell, onInput } = useSudoku();
@@ -35,6 +36,7 @@ export const SudokuPuzzle = () => {
 
     return (
         <div class={styles.Content} tabIndex={0} onKeyDown={keyDownHandler}>
+            <Header />
             <Board />
             <Keyboard />
         </div>

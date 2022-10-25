@@ -1,0 +1,11 @@
+.HeaderContent {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: fit-content;
+    margin-inline: auto;
+    gap: 8px;
+}
+
+.HeaderContent span {
+    font-size: 2em;
+}
