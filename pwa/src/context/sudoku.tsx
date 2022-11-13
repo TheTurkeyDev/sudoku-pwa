@@ -1,4 +1,4 @@
-import { createSignal, createContext, useContext, Setter, Accessor, JSX, createEffect } from 'solid-js';
+import { createSignal, createContext, useContext, Setter, Accessor, JSX, createEffect, JSXElement } from 'solid-js';
 import { BoardType } from '../board/board-type';
 
 type SudokuStore = {
@@ -21,16 +21,17 @@ type SudokuStore = {
     readonly endTime: Accessor<number>,
     readonly solution: Accessor<readonly number[]>,
     readonly gameState: Accessor<number>,
+    readonly setGameState: Setter<number>,
 }
 
 const SudokuContext = createContext<SudokuStore | null>(null);
 
 type SudokuProviderProps = {
-    readonly children: JSX.Element
+    readonly children: JSXElement
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function SudokuProvider(props: any) {
+export function SudokuProvider(props: SudokuProviderProps) {
     const [gameState, setGameState] = createSignal<number>(0);
     const [baseBoard, setBaseBoard] = createSignal<readonly number[]>(Array.from(Array(81)).map(() => 0));
     const [board, setBoard] = createSignal<readonly number[]>(Array.from(Array(81)).map(() => 0));
@@ -44,7 +45,6 @@ export function SudokuProvider(props: any) {
 
     createEffect(() => {
         if (gameState() === 1 && board().find((v, i) => !v || solution()[i] !== v) === undefined) {
-            console.log('GAME OVER!');
             setGameState(2);
             setEndTime((new Date()).getTime());
         }
@@ -60,6 +60,11 @@ export function SudokuProvider(props: any) {
         setEditingOptions(false);
         setStartTime((new Date()).getTime());
         setGameState(1);
+
+        //TODO: REMOVE!
+        setTimeout(() => {
+            setBoard(solution());
+        }, 5000);
     };
 
     const setBoardValue = (index: number, value: number) => {
@@ -110,7 +115,8 @@ export function SudokuProvider(props: any) {
         startTime,
         endTime,
         solution,
-        gameState
+        gameState,
+        setGameState
     };
 
     return (

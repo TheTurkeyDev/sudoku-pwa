@@ -3,9 +3,10 @@ import { useSudoku } from './context/sudoku';
 import { Board } from './board/board';
 import { Keyboard } from './keyboard/keyboard';
 import { Header } from './header/header';
+import { GameOverModal } from './modal/game-over/game-over-modal';
 
 export const SudokuPuzzle = () => {
-    const { setBoardValue, setSelectedCell, selectedCell, onInput } = useSudoku();
+    const { setBoardValue, setSelectedCell, selectedCell, onInput, gameState } = useSudoku();
 
     const keyDownHandler = (event: KeyboardEvent) => {
         if (event.code.startsWith('Digit')) {
@@ -39,6 +40,7 @@ export const SudokuPuzzle = () => {
             <Header />
             <Board />
             <Keyboard />
+            <GameOverModal />
         </div>
     );
 };

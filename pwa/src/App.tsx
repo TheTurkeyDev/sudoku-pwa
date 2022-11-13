@@ -28,17 +28,17 @@ const generateBoardPromise = (difficulty: number): Promise<string> => (
 );
 
 const App = () => {
-    const { loadBoard, setDifficulty, difficulty } = useSudoku();
+    const { loadBoard, setDifficulty, difficulty, gameState } = useSudoku();
     const [boardJson] = createResource<string, number>(difficulty, generateBoardPromise);
-    const [inGame, setInGame] = createSignal<boolean>(false);
 
     createEffect(() => {
+        if (difficulty() === -1)
+            return;
         const json = boardJson();
         if (!json)
             return;
         const board = JSON.parse(json) as BoardType;
         loadBoard(board);
-        setInGame(true);
     });
 
     const playDailyLevel = () => {
@@ -49,7 +49,7 @@ const App = () => {
         <div class={styles.App}>
             <NavBar />
             {
-                boardJson.loading ? <CenteredLoadingSpinner /> : (inGame() ? <SudokuPuzzle /> : (
+                boardJson.loading ? <CenteredLoadingSpinner /> : (gameState() > 0 ? <SudokuPuzzle /> : (
                     <div class={styles.MainContent}>
                         <h1>Daily Sudoku</h1>
                         <hr style={{ width: '100%' }} />

@@ -1,7 +1,7 @@
 import { createSignal, onCleanup } from 'solid-js';
 import { useSudoku } from '../context/sudoku';
 
-const timeBetweenDates = (from: number, to: number) => {
+export const timeBetweenDates = (from: number, to: number) => {
     const difference = to - from;
 
     const timeData = {
@@ -17,19 +17,16 @@ const timeBetweenDates = (from: number, to: number) => {
         timeData.minutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
         timeData.seconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
     }
-    return {
-        timeData,
-        difference
-    };
+    return timeData;
 };
 
 
 export const Timer = () => {
     const { startTime, endTime, gameState } = useSudoku();
-    const [timerDetails, setTimerDetails] = createSignal(timeBetweenDates(startTime(), new Date().getTime()).timeData);
+    const [timerDetails, setTimerDetails] = createSignal(timeBetweenDates(startTime(), new Date().getTime()));
 
     const timer = setInterval(() => {
-        setTimerDetails(timeBetweenDates(startTime(), gameState() === 1 ? new Date().getTime() : endTime()).timeData);
+        setTimerDetails(timeBetweenDates(startTime(), gameState() === 1 ? new Date().getTime() : endTime()));
     }, 1000);
 
     onCleanup(() => clearInterval(timer));

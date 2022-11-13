@@ -9,16 +9,16 @@ type CellProps = {
 
 const doValidCheck = false;
 
-export const Cell = ({ id }: CellProps) => {
+export const Cell = (props: CellProps) => {
     const { board, setSelectedCell, selectedCell, isLockedValue, solution } = useSudoku();
     const [highlight, setHighlighted] = createSignal<boolean>();
     const [invalid, setInvalid] = createSignal<boolean>();
 
-    const locked = isLockedValue(id);
+    const locked = isLockedValue(props.id);
 
     createEffect(() => {
         const selectedCellVal = board()[selectedCell()];
-        setHighlighted(selectedCellVal !== 0 && selectedCellVal === board()[id]);
+        setHighlighted(selectedCellVal !== 0 && selectedCellVal === board()[props.id]);
     });
 
     const checkVert = (id: number, val: number) => !!board().find((v, i) => i !== id && i % 9 === id % 9 && v === val);
@@ -26,21 +26,21 @@ export const Cell = ({ id }: CellProps) => {
     const checkBox = (id: number, val: number) => !!board().find((v, i) => i !== id && Math.floor(i / 27) === Math.floor(id / 27) && Math.floor((i % 9) / 3) === Math.floor((id % 9) / 3) && v === val);
 
     createEffect(() => {
-        const cellValue = board()[id];
+        const cellValue = board()[props.id];
         if (doValidCheck)
-            setInvalid(!!cellValue && solution()[id] !== cellValue);
+            setInvalid(!!cellValue && solution()[props.id] !== cellValue);
         else
-            setInvalid(checkVert(id, cellValue) || checkHoriz(id, cellValue) || checkBox(id, cellValue));
+            setInvalid(checkVert(props.id, cellValue) || checkHoriz(props.id, cellValue) || checkBox(props.id, cellValue));
     });
 
     return (
         <div
-            class={`${styles.Cell} ${selectedCell() === id ? styles.CellSelected : ''} ${highlight() ? styles.CellHighlight : ''}`}
-            onClick={() => setSelectedCell(id)}>
+            class={`${styles.Cell} ${selectedCell() === props.id ? styles.CellSelected : ''} ${highlight() ? styles.CellHighlight : ''}`}
+            onClick={() => setSelectedCell(props.id)}>
             {
-                board()[id] === 0 ? <Options id={id} /> : (
+                board()[props.id] === 0 ? <Options id={props.id} /> : (
                     <h2 class={`${styles.Number} ${locked ? '' : styles.Unlocked} ${!locked && invalid() ? styles.Invalid : ''}`}>
-                        {board()[id]}
+                        {board()[props.id]}
                     </h2>
                 )
             }
